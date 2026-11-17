@@ -1,0 +1,17 @@
+timestamp,source,event_type,username,source_ip,message
+2026-11-15 09:00:01,auth-server,LOGIN_SUCCESS,ali,192.168.1.10,User logged in successfully
+2026-11-15 09:02:15,auth-server,LOGIN_FAILED,sara,10.0.0.45,Invalid password attempt
+2026-11-15 09:02:30,auth-server,LOGIN_FAILED,sara,10.0.0.45,Invalid password attempt
+2026-11-15 09:02:45,auth-server,LOGIN_FAILED,sara,10.0.0.45,Invalid password attempt
+2026-11-15 09:03:00,auth-server,LOGIN_FAILED,sara,10.0.0.45,Invalid password attempt
+2026-11-15 09:03:15,auth-server,LOGIN_FAILED,sara,10.0.0.45,Invalid password attempt
+2026-11-15 09:03:40,auth-server,LOGIN_SUCCESS,sara,10.0.0.45,User logged in after multiple failures
+2026-11-15 09:10:00,iam-service,PRIVILEGE_CHANGE,admin,192.168.1.5,Added user hamza to Administrators group
+2026-11-15 09:12:00,api-gateway,DATA_REQUEST,bilal,172.16.0.88,High volume burst request 1
+2026-11-15 09:12:05,api-gateway,DATA_REQUEST,bilal,172.16.0.88,High volume burst request 2
+2026-11-15 09:12:10,api-gateway,DATA_REQUEST,bilal,172.16.0.88,High volume burst request 3
+2026-11-15 09:12:15,api-gateway,DATA_REQUEST,bilal,172.16.0.88,High volume burst request 4
+2026-11-15 09:15:10,file-server,ACCESS_DENIED,guest,172.16.0.22,Unauthorized access attempt to /etc/shadow
+2026-11-15 09:15:25,file-server,ACCESS_DENIED,guest,172.16.0.22,Unauthorized access attempt to /etc/shadow
+2026-11-15 09:15:40,file-server,ACCESS_DENIED,guest,172.16.0.22,Unauthorized access attempt to /etc/shadow
+2026-11-15 09:20:00,web-portal,LOGIN_SUCCESS,zainab,192.168.1.18,Normal session started
