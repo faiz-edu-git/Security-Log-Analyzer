@@ -40,7 +40,7 @@ Other event types are accepted and stored but are not used by any rule.
 | Field | Type | Description |
 |---|---|---|
 | `raw_line_no` | integer | Line number in the input file, used as evidence in alerts |
-| `timestamp` | datetime (ISO 8601) | Converted to `YYYY-MM-DD HH:MM:SS` |
+| `timestamp` | datetime (in memory), text (when stored) | A Python datetime object inside the program, so times can be subtracted. Saved as text `YYYY-MM-DD HH:MM:SS` in SQLite, CSV and alert evidence | 
 | `source` | text | Copied from input |
 | `event_type` | text | Lower case |
 | `username` | text | Copied from input |
