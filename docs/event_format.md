@@ -18,6 +18,8 @@ Alishba's input format document.
 - All field names are lowercase.
 - timestamp is always YYYY-MM-DD HH:MM:SS (the parser converts other
   accepted input formats to this).
+- Inside the program timestamp is a Python datetime object. In saved files
+  and alert evidence it is text, YYYY-MM-DD HH:MM:SS
 - event_type is always lowercase.
 - Events are sorted by timestamp after parsing.
 - Every field is always present, except message, which may be None.
