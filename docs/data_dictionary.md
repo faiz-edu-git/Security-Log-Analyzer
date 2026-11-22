@@ -53,3 +53,66 @@ Events are sorted by `timestamp` after parsing, so out-of-order input does not a
 - Only IPv4 addresses are supported.
 - Timestamps carry no time zone. All times are treated as one local time.
 - Only two date formats are accepted.
+
+## 5. Detection thresholds
+
+All thresholds are stored in `config.json` and can be changed without editing code. The values below are the starting values used for `sample_logs.csv`.
+
+| Rule | Detects | Event type used | Threshold | Group by |
+|---|---|---|---|---|
+| R1 | Repeated failed logins | `login_failed` | 5 or more within 120 seconds | `username` |
+| R2 | Successful login after repeated failures | `login_failed`, then `login_success` | 5 or more failures, then a success within 300 seconds of the last failure | `username` |
+| R3 | Privilege change | `privilege_change` | Any single event | not applicable |
+| R4 | Burst of data requests | `data_request` | 8 or more within 60 seconds | `username` |
+| R5 | Repeated access denied | `access_denied` | 3 or more within 120 seconds | `username` |
+
+The condition is "greater than or equal to" the threshold, so exactly 5 failed logins in 120 seconds triggers R1 and 4 does not.
+
+## 6. Labelling method
+
+The dataset is labelled by hand before any rule is run, so the labels do not depend on the code being tested.
+
+1. For every planted pattern, decide which rule should fire, using only the thresholds in section 5.
+2. Record the expected alert (rule, username, line numbers of the evidence) in `labels.csv`.
+3. Lines that should not raise any alert are listed as expected negatives.
+4. Malformed lines are listed separately with the line number and the reason for rejection.
+
+Precision, Recall, F1 and false positive rate are computed by comparing the alerts produced by the tool with `labels.csv`.
+
+### Expected results for `sample_logs.csv`
+
+Line numbers count the header as line 1.
+
+| Rule | Expected alert | Evidence |
+|---|---|---|
+| R1 | `sara` (5 failures in 60 s), `bilal` (6 failures in 75 s) | `sara` lines 15 to 19, `bilal` lines 22 to 27 |
+| R2 | `sara` (success after 5 failures) | `sara` lines 15 to 20 |
+| R3 | `admin` | line 21 |
+| R4 | `tariq` (8 requests in 49 s) | `tariq` lines 30 to 37 |
+| R5 | `guest` (5 denied in 40 s) | `guest` lines 47 to 51 |
+
+Boundary and negative cases that must not raise an alert:
+
+| User | Why no alert |
+|---|---|
+| `nida` | 4 failed logins, one below the R1 threshold. The later success does not trigger R2 |
+| `rida` | 7 requests in 48 s, one below the R4 threshold |
+| `intern` | 3 access-denied events but over 130 s, outside the 120 s window |
+| `kamran` | 5 failed logins spread over 10 minutes, never 5 within 120 s |
+| `hina`, `omar` | 1 and 2 failures before a success, below the threshold |
+| `ali`, `zainab`, `usman`, `fatima` | Normal activity |
+
+### Malformed lines (must be rejected, not crash the parser)
+
+| Line | Reason |
+|---|---|
+| 58 | Invalid timestamp |
+| 59 | Missing username |
+| 60 | Invalid IP address (`999.999.1.1`) |
+| 61 | Missing event type |
+| 62 | Empty row |
+| 63 | Wrong number of columns (4 instead of 6) |
+
+Expected parser summary: 63 data lines read, 57 accepted, 6 rejected.
+
+Line 56 (`15/11/2026 09:37:00`) is valid and uses the second accepted date format. It appears before line 57 although its time is later, to test sorting.
