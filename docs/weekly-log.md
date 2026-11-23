@@ -15,12 +15,12 @@ Record of weekly progress, decisions, problems and plans. One entry per week.
 
 #### Faizullah Khan
 - Studied the project brief: the five detection rules, the testing types, the evaluation metrics (TP, FP, FN, TN, precision, recall, F1, FPR) and the report structure.
-- Agreed the six event fields with Alishba and wrote docs/event_format.md (__ Nov).
-- Reviewed the first sample data and gave feedback on gaps: no access_denied events, too few normal and boundary cases, and messages that revealed the expected result (__ Nov).
-- Updated docs/event_format.md to match docs/data_dictionary.md (added raw_line_no, the full list of sources, the missing-field rule, and which rule uses each event type) (__ Nov).
+- Agreed the six event fields with Alishba and wrote docs/event_format.md (18 Nov).
+- Reviewed the first sample data and gave feedback on gaps: no access_denied events, too few normal and boundary cases, and messages that revealed the expected result (19 Nov).
+- Updated docs/event_format.md to match docs/data_dictionary.md (added raw_line_no, the full list of sources, the missing-field rule, and which rule uses each event type) (20 Nov).
 - Asked Alishba whether the parser outputs the timestamp as a datetime object or as text, and agreed the rule for alert evidence (see Decisions) (21 Nov).
-- Created the src/loganalyzer/ and tests/ folders in the repository (__ Nov).
-- Wrote a practice script, scratch/events_practice.py, to work with events as Python dictionaries and datetime values (__ Nov).
+- Created the src/loganalyzer/ and tests/ folders in the repository (21 Nov).
+- Wrote a practice script, scratch/events_practice.py, to work with events as Python dictionaries and datetime values (23 Nov).
 - Made a personal 12-week task plan for the detection and evaluation part.
 
 ### Decisions
