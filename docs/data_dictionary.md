@@ -70,7 +70,7 @@ The condition is "greater than or equal to" the threshold, so exactly 5 failed l
 
 ## 6. Labelling method
 
-The dataset is labelled by hand before any rule is run, so the labels do not depend on the code being tested.
+The dataset is labelled by hand before any rule is run, so the labels do not depend on the code that is being  tested.
 
 1. For every planted pattern, decide which rule should fire, using only the thresholds in section 5.
 2. Record the expected alert (rule, username, line numbers of the evidence) in `labels.csv`.
@@ -102,7 +102,7 @@ Boundary and negative cases that must not raise an alert:
 | `hina`, `omar` | 1 and 2 failures before a success, below the threshold |
 | `ali`, `zainab`, `usman`, `fatima` | Normal activity |
 
-### Malformed lines (must be rejected, not crash the parser)
+### Malformed lines (it must be rejected, not crash the parser)
 
 | Line | Reason |
 |---|---|
