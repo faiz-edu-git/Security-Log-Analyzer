@@ -76,7 +76,7 @@ account are followed by a successful login for the same account.
    failures, does not count.
 
 **Example:** sara has 5 login_failed events between 09:02:15 and
-09:03:15, then a login_success at 09:03:40 (25 seconds after the last
+09:03:15, then a login_success at 09:03:45 (30 seconds after the last
 failure). This raises one R2 alert, High. R1 also raises its own Medium
 alert for the same failures. That is intended: R1 says "someone is
 guessing", R2 says "the guess may have worked".
@@ -84,7 +84,7 @@ guessing", R2 says "the guess may have worked".
 **Test cases:**
 | Case | Expected |
 |---|---|
-| 5 failures within 120 s, success 25 s later | alert (High) |
+| 5 failures within 120 s, success 30 s later | alert (High) |
 | 4 failures, then success | no alert (below threshold) |
 | 5 failures, success exactly 120 s after the last | alert (edge of gap) |
 | 5 failures, success 121 s after the last | no alert |
