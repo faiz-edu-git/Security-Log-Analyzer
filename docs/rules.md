@@ -141,3 +141,91 @@ that raw_line_no points to.
   administrator work, so false positives are expected.
 - The rule cannot tell who received the new privileges, because that is
   only in the message text.
+
+## R4: Unusual request volume
+
+**Idea:** An account makes far more data requests than normal in a
+short time, which can mean automated scraping or abuse.
+
+| Item | Value |
+|---|---|
+| Rule ID | R4 |
+| Event used | data_request |
+| Grouped by | username |
+| Threshold | 8 or more data_request events (inclusive) |
+| Time window | 60 seconds (last minus first is 60 s or less) |
+| Severity | Medium |
+| Alert text | "8 or more data requests for the same username within 60 seconds" |
+| Evidence | the request rows: raw_line_no, timestamp (text, YYYY-MM-DD HH:MM:SS), source_ip |
+
+**How the rule works (steps):**
+1. Keep only data_request events.
+2. Group them by username and put each group in time order.
+3. Look at every run of 8 events in a row. If the last time minus the
+   first time is 60 seconds or less, raise one alert.
+4. If the requests continue (9, 10, 11 in the same burst), keep them in
+   the same alert.
+
+**Example:** bilal makes 8 data_request events within 40 seconds. This
+raises one R4 alert, Medium.
+
+**Test cases:**
+| Case | Expected |
+|---|---|
+| 7 requests within 60 s | no alert (just below) |
+| 8 requests within 60 s | alert (at threshold) |
+| 9 requests within 60 s | one alert (above threshold) |
+| 8 requests, first to last exactly 60 s | alert (edge of window) |
+| 8 requests, first to last 61 s | no alert |
+| 8 requests spread over 10 minutes | no alert |
+| 5 requests for one user + 5 for another within 60 s | no alert |
+| login_failed events mixed in | not counted |
+
+**Known limitations:**
+- An attacker who stays under 8 requests per 60 seconds is not detected.
+- An attacker who spreads requests across many usernames is not
+  detected, because R4 counts per username.
+- A legitimate script or heavy user can also trigger R4.
+
+## R5: Repeated access denied
+
+**Idea:** An account keeps trying to reach things it is not allowed to
+reach, which can mean probing for permissions.
+
+| Item | Value |
+|---|---|
+| Rule ID | R5 |
+| Event used | access_denied |
+| Grouped by | username |
+| Threshold | 3 or more access_denied events (inclusive) |
+| Time window | 120 seconds (last minus first is 120 s or less) |
+| Severity | Medium |
+| Alert text | "3 or more access denied events for the same username within 120 seconds" |
+| Evidence | the denied rows: raw_line_no, timestamp (text, YYYY-MM-DD HH:MM:SS), source_ip |
+
+**How the rule works (steps):**
+1. Keep only access_denied events.
+2. Group them by username and put each group in time order.
+3. Look at every run of 3 events in a row. If the last time minus the
+   first time is 120 seconds or less, raise one alert.
+4. If the denials continue, keep them in the same alert.
+
+**Example:** kamran has 3 access_denied events within 90 seconds. This
+raises one R5 alert, Medium.
+
+**Test cases:**
+| Case | Expected |
+|---|---|
+| 2 denials within 120 s | no alert (just below) |
+| 3 denials within 120 s | alert (at threshold) |
+| 4 denials within 120 s | one alert (above threshold) |
+| 3 denials, first to last exactly 120 s | alert (edge of window) |
+| 3 denials, first to last 121 s | no alert |
+| 3 denials spread over 10 minutes | no alert |
+| 2 denials for one user + 1 for another within 120 s | no alert |
+| login_failed events mixed in | not counted |
+
+**Known limitations:**
+- A normal user who clicks a forbidden link a few times can trigger R5.
+- Only the username is used, so denials spread across usernames from
+  one IP are not detected.
