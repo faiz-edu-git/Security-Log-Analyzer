@@ -23,8 +23,8 @@ A Python tool that reads authentication, access and service logs from a file, va
 | R1 | Many failed logins for one account in a short time | Password guessing (brute force) | Medium |
 | R2 | A successful login right after repeated failures for the same account | A guess may have worked, so the account may be compromised | High |
 | R3 | A privilege change | Privilege abuse, often a step after an account is compromised | High |
-| R4 | A burst of data requests from one user | Automated or abnormal data access, for example bulk downloading | To be confirmed in the rule specification |
-| R5 | Repeated access-denied events for one user | Someone trying resources they are not allowed to use | To be confirmed in the rule specification |
+| R4 | A burst of data requests from one user | Automated or abnormal data access, for example bulk downloading | Medium |
+| R5 | Repeated access-denied events for one user | Someone trying resources they are not allowed to use | Medium |
 
 MITRE ATT&CK is used only to give context: R1 relates to Brute Force (T1110), R2 to Valid Accounts (T1078) and R3 to Account Manipulation (T1098). An alert is a lead for an analyst and is not proof that a technique was used. A real user who forgot a password can also trigger R1.
 
@@ -65,3 +65,4 @@ MITRE ATT&CK is used only to give context: R1 relates to Brute Force (T1110), R2
 - Results are reported honestly, including false positives, false negatives and limitations. No result is invented.
 - The tool is for defence and learning. It must not be used on logs the user is not authorized to analyse.
 - AI tools were used for planning, drafting and explanation, and this is disclosed in the report. 
+
