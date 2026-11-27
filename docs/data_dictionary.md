@@ -61,7 +61,7 @@ All thresholds are stored in `config.json` and can be changed without editing co
 | Rule | Detects | Event type used | Threshold | Group by |
 |---|---|---|---|---|
 | R1 | Repeated failed logins | `login_failed` | 5 or more within 120 seconds | `username` |
-| R2 | Successful login after repeated failures | `login_failed`, then `login_success` | 5 or more failures, then a success within 300 seconds of the last failure | `username` |
+| R2 | Successful login after repeated failures | `login_failed`, then `login_success` | 5 or more failures, within 120 seconds then a success within 120 seconds of the last failure | `username` |
 | R3 | Privilege change | `privilege_change` | Any single event | not applicable |
 | R4 | Burst of data requests | `data_request` | 8 or more within 60 seconds | `username` |
 | R5 | Repeated access denied | `access_denied` | 3 or more within 120 seconds | `username` |

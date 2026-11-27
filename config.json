@@ -3,15 +3,16 @@
     "threshold": 5,
     "window_seconds": 120
   },
-  "r2_success_after_failures": {
-    "failed_threshold": 5,
-    "success_within_seconds": 300
-  },
+ "r2_success_after_failures": {
+  "failed_threshold": 5,
+  "window_seconds": 120,
+  "success_within_seconds": 120
+},
   "r3_privilege_change": {
     "enabled": true
   },
   "r4_request_burst": {
-    "threshold": 20,
+    "threshold": 8,
     "window_seconds": 60
   },
   "r5_access_denied": {
