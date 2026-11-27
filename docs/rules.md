@@ -48,3 +48,96 @@ Rules never read the message text.
 - An attacker who stays under 5 failures per 120 seconds is not detected.
 - Five failures can also be a real user who forgot a password, so R1
   alerts are "worth checking", not proof of an attack.
+
+## R2: Success after repeated failures
+
+**Idea:** A password guess probably worked. Failed logins for an
+account are followed by a successful login for the same account.
+
+| Item | Value |
+|---|---|
+| Rule ID | R2 |
+| Events used | login_failed, login_success |
+| Grouped by | username |
+| Condition | 5 or more login_failed within 120 seconds, then a login_success for the same username within 120 seconds after the last of those failures |
+| Severity | High |
+| Alert text | "Successful login after 5 or more failed logins for the same username" |
+| Evidence | the failed-login rows and the success row: raw_line_no, timestamp (text, YYYY-MM-DD HH:MM:SS), source_ip |
+
+**How the rule works (steps):**
+1. Keep only login_failed and login_success events.
+2. Group them by username and put each group in time order.
+3. Find 5 login_failed events in a row (no login_success from the same
+   username in between) where the last time minus the first time is
+   120 seconds or less.
+4. If a login_success for the same username comes after the last of
+   those failures, and 120 seconds or less after it, raise one alert.
+5. A success that comes before the failures, or after fewer than 5
+   failures, does not count.
+
+**Example:** sara has 5 login_failed events between 09:02:15 and
+09:03:15, then a login_success at 09:03:40 (25 seconds after the last
+failure). This raises one R2 alert, High. R1 also raises its own Medium
+alert for the same failures. That is intended: R1 says "someone is
+guessing", R2 says "the guess may have worked".
+
+**Test cases:**
+| Case | Expected |
+|---|---|
+| 5 failures within 120 s, success 25 s later | alert (High) |
+| 4 failures, then success | no alert (below threshold) |
+| 5 failures, success exactly 120 s after the last | alert (edge of gap) |
+| 5 failures, success 121 s after the last | no alert |
+| 5 failures, no success | no R2 alert (R1 only) |
+| success with no failures before it | no alert |
+| success before the failures | no alert (order matters) |
+| 5 failures for user A, success for user B | no alert (different usernames) |
+| 5 failures spread over 10 minutes, then success | no alert |
+
+**Known limitations:**
+- The success is not required to come from the same IP address.
+- A real user who forgets a password five times and then remembers it
+  also triggers R2.
+- An attacker who waits more than 120 seconds before the successful
+  login is not detected.
+
+## R3: Privileged account change
+
+**Idea:** Someone's privileges were changed, for example a user was
+added to an administrators group. This is a common step after an
+account is compromised.
+
+| Item | Value |
+|---|---|
+| Rule ID | R3 |
+| Event used | privilege_change |
+| Grouped by | nothing (every event is checked on its own) |
+| Condition | any privilege_change event |
+| Severity | High |
+| Alert text | "Privileged account change recorded" |
+| Evidence | the event row: raw_line_no, timestamp (text, YYYY-MM-DD HH:MM:SS), username, source_ip, source |
+
+**How the rule works (steps):**
+1. Keep only privilege_change events.
+2. Raise one alert for each of them.
+
+**Example:** admin has a privilege_change event at 09:10:00 from
+192.168.1.5. This raises one R3 alert, High. The message says who was
+added, but the rule does not read it. A person reads it in the log line
+that raw_line_no points to.
+
+**Test cases:**
+| Case | Expected |
+|---|---|
+| one privilege_change event | one alert (High) |
+| only login events, no privilege_change | no alert |
+| two privilege_change events, different usernames | two alerts |
+| two privilege_change events, same username, 5 s apart | two alerts (no grouping) |
+| privilege_change with an empty message | alert (message is not used) |
+| login_success by admin, no privilege_change | no alert |
+
+**Known limitations:**
+- Every privilege change raises an alert, including legitimate
+  administrator work, so false positives are expected.
+- The rule cannot tell who received the new privileges, because that is
+  only in the message text.
