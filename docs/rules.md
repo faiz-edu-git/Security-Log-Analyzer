@@ -229,3 +229,25 @@ raises one R5 alert, Medium.
 - A normal user who clicks a forbidden link a few times can trigger R5.
 - Only the username is used, so denials spread across usernames from
   one IP are not detected.
+
+## Severity levels
+
+Severity says how soon a person should look at an alert. It does not
+say how sure we are that an attack happened.
+
+| Level | Meaning | What a person should do |
+|---|---|---|
+| High | Strong sign of a compromise, or a change with high impact | Look at it first |
+| Medium | Suspicious pattern that could be an attack or a mistake | Look at it soon |
+| Low | Weak signal that is often normal | Look at it when time allows |
+
+| Rule | Severity | Why |
+|---|---|---|
+| R1 Repeated failed logins | Medium | Could be a guessing attack or a user who forgot a password |
+| R2 Success after repeated failures | High | The guess may have worked, so the account may be compromised |
+| R3 Privileged account change | High | New privileges give wide access, even if the change is legitimate |
+| R4 Unusual request volume | Medium | Could be abuse or a legitimate script |
+| R5 Repeated access denied | Medium | Could be probing for permissions or a user's mistake |
+
+Severity is fixed per rule for now. No rule uses Low yet. The level is
+kept for rules added later.
